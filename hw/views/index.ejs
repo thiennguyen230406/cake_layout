@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Catalog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root { --ink:#20242d; --muted:#737783; --paper:#f8f7f3; --orange:#ff6b3d; --yellow:#ffd166; --blue:#85b7ff; --line:#e9e6df; --gold:#d7a13b; --night:#182327; }
+      * { box-sizing:border-box; }
+      body { margin:0; color:var(--ink); background:var(--paper); font-family:'DM Sans',sans-serif; }
+      a { color:inherit; text-decoration:none; }
+      .shell { max-width:1280px; margin:auto; padding:0 28px; }
+      .topbar { position:absolute; z-index:2; top:0; right:0; left:0; display:flex; align-items:center; justify-content:space-between; height:88px; border-bottom:1px solid #ffffff2b; color:#f7f4ec; }
+      .brand { display:flex; align-items:center; gap:10px; color:var(--gold); font:600 38px/1 'Cormorant Garamond',serif; letter-spacing:2px; text-transform:uppercase; }
+      .brand-mark { display:none; }
+      .nav { display:flex; align-items:center; gap:25px; color:#f7f4ec; font-size:13px; }
+      .nav a { opacity:.86; transition:opacity .2s; }
+      .nav a:hover { opacity:1; }
+      .nav a:first-child { color:#fff; font-weight:700; }
+      .profile { display:flex; align-items:center; gap:10px; }
+      .language { color:#fff; font-size:18px; }
+      .language + .language { font-size:16px; }
+      .cart-button { border:1px solid #ffffff55; border-radius:2px; padding:8px 10px; color:#fff; background:#ffffff12; font-weight:700; cursor:pointer; }
+      .cart-count { display:inline-grid; place-items:center; min-width:18px; height:18px; margin-left:3px; padding:0 4px; color:#fff; background:var(--orange); border-radius:9px; font-size:10px; }
+      .cart-drawer { position:fixed; z-index:5; right:20px; bottom:20px; width:min(340px,calc(100% - 40px)); padding:20px; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 18px 50px #20242d2b; }
+      .cart-drawer[hidden] { display:none; }
+      .cart-drawer h2 { margin:0 0 12px; font:700 21px 'Space Grotesk'; }
+      .cart-items { margin:0 0 15px; padding:0; list-style:none; color:var(--muted); font-size:13px; }
+      .cart-items li { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); }
+      .avatar { display:grid; place-items:center; width:34px; height:34px; background:var(--yellow); border:2px solid var(--ink); border-radius:50%; font-weight:700; }
+      .level { font-size:11px; line-height:1.2; color:var(--muted); }
+      .level strong { display:block; color:var(--ink); font-size:13px; }
+      .hero { position:relative; display:flex; align-items:center; min-height:570px; margin:0 calc(50% - 50vw); padding:150px max(7vw,28px) 75px; overflow:hidden; color:#fff; background:linear-gradient(90deg,#182327f2 0%,#182327c9 43%,#18232770 100%),url('<%= products.length ? products[0].image : '' %>') center/cover; }
+      .hero::after { position:absolute; inset:0; pointer-events:none; content:''; background:linear-gradient(0deg,#10191ccc,transparent 35%); }
+      .hero-content { position:relative; z-index:1; max-width:520px; }
+      .eyebrow { display:inline-flex; gap:8px; align-items:center; color:#e1b14e; font-weight:700; font-size:13px; letter-spacing:2px; text-transform:uppercase; }
+      h1 { max-width:640px; margin:14px 0 18px; font:600 clamp(62px,8vw,116px)/.78 'Cormorant Garamond',serif; letter-spacing:-2px; text-transform:uppercase; }
+      .hero-copy { max-width:420px; color:#e6e1d7cc; font-size:16px; line-height:1.55; }
+      .hero-actions { display:flex; gap:12px; margin-top:28px; }
+      .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; border-radius:10px; padding:12px 17px; font:700 13px 'DM Sans',sans-serif; cursor:pointer; transition:transform .2s,box-shadow .2s; }
+      .btn:hover { transform:translateY(-2px); box-shadow:0 8px 18px #20242d1c; }
+      .btn-primary { color:#fff; background:var(--ink); }
+      .btn-light { background:#fff; border:1px solid var(--line); }
+      .hero-art { display:none; }
+      .section-head { display:flex; justify-content:space-between; align-items:end; margin:18px 0 20px; }
+      .section-head h2 { margin:0; font:700 29px 'Space Grotesk'; letter-spacing:-1.5px; }
+      .section-head p { margin:5px 0 0; color:var(--muted); font-size:13px; }
+      .search { display:flex; gap:8px; width:min(320px,100%); padding:8px 10px; background:#fff; border:1px solid var(--line); border-radius:11px; }
+      .search input { width:100%; border:0; outline:0; font:14px 'DM Sans'; background:transparent; }
+      .catalog-tools { display:flex; align-items:center; gap:8px; }
+      .icon-button { display:inline-grid; place-items:center; width:38px; height:38px; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:10px; font-size:18px; cursor:pointer; }
+      .icon-button:hover { color:#fff; background:var(--ink); }
+      .add-product-button { display:none; }
+      .add-product-button.visible { display:inline-grid; color:#24764c; }
+      .categories { display:flex; gap:9px; overflow:auto; margin-bottom:23px; padding-bottom:2px; }
+      .category { flex:0 0 auto; padding:8px 13px; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:20px; font-size:12px; cursor:pointer; }
+      .category.active { color:#fff; background:var(--ink); border-color:var(--ink); }
+      .products { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; padding-bottom:60px; }
+      .product-card { position:relative; overflow:hidden; background:#fff; border:1px solid var(--line); border-radius:16px; transition:transform .2s,box-shadow .2s; }
+      .product-card:hover { transform:translateY(-5px); box-shadow:0 16px 30px #20242d12; }
+      .product-image { position:relative; height:220px; background:#eef1f4; }
+      .product-image img { width:100%; height:100%; object-fit:cover; }
+      .tag { position:absolute; left:12px; top:12px; padding:5px 8px; color:var(--ink); background:var(--yellow); border-radius:6px; font-size:10px; font-weight:700; }
+      .heart { position:absolute; right:11px; top:11px; width:30px; height:30px; border:0; border-radius:50%; background:#fff; cursor:pointer; font-size:16px; }
+      .heart.saved { color:var(--orange); }
+      .product-info { padding:16px; }
+      .product-info h3 { overflow:hidden; margin:0 0 7px; font:700 17px 'Space Grotesk'; text-overflow:ellipsis; white-space:nowrap; }
+      .meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+      .price { font:700 18px 'Space Grotesk'; }
+      .stock { color:var(--muted); font-size:11px; }
+      .card-actions { display:flex; gap:8px; align-items:center; }
+      .card-actions .btn { flex:1; padding:10px 8px; font-size:12px; }
+      .card-actions .icon-button { flex:0 0 36px; width:36px; height:36px; font-size:16px; }
+      .manage-actions { display:none; gap:8px; align-items:center; }
+      .catalog.manage-open .manage-actions { display:flex; }
+      .delete-button { color:#c94d4d; }
+      .empty { grid-column:1/-1; padding:45px; color:var(--muted); text-align:center; background:#fff; border:1px dashed var(--line); border-radius:16px; }
+      .admin-link { color:var(--muted); font-size:12px; }
+      @media (max-width:900px) { .products { grid-template-columns:repeat(3,1fr); } .nav { gap:15px; } }
+      @media (max-width:680px) { .shell { padding:0 16px; } .topbar { height:72px; } .brand { font-size:30px; } .nav { display:none; } .hero { min-height:500px; padding:125px 28px 60px; } .hero-art { min-height:220px; } .products { grid-template-columns:repeat(2,1fr); gap:12px; } .product-image { height:165px; } .section-head { align-items:stretch; flex-direction:column; gap:15px; } .search { width:100%; } h1 { letter-spacing:-1px; } }
+      @media (max-width:390px) { .products { grid-template-columns:1fr; } .product-image { height:210px; } }
+    </style>
+  </head>
+  <body>
+    <header class="shell topbar">
+      <a class="brand" href="/"><span class="brand-mark">S</span> Product Catalog</a>
+      <nav class="nav"><a href="/">Products</a></nav>
+      <div class="profile"><button class="cart-button" id="cartToggle" type="button" aria-label="Open cart">&#128722; <span class="cart-count" id="cartCount">0</span></button></div>
+    </header>
+
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-content"><span class="eyebrow">Product catalog</span><h1>Product<br />Catalog</h1><p class="hero-copy">Browse the available catalog.</p></div>
+      </section>
+      <section id="products">
+        <div class="section-head"><div><h2>Products</h2><p>Browse the available catalog.</p></div><div class="catalog-tools"><form class="search" action="/search" method="GET"><span>&#128269;</span><input name="q" placeholder="Search products" value="<%= query %>" /></form><button class="icon-button" id="manageToggle" type="button" title="Manage products" aria-label="Manage products">&#9998;</button><a class="icon-button add-product-button" id="addProductButton" href="/add" title="Add product" aria-label="Add product">+</a></div></div>
+        <div class="categories"><button class="category active" data-category="all">All items</button><button class="category" data-category="desk">Desk setup</button><button class="category" data-category="wear">Wearables</button><button class="category" data-category="home">Home energy</button></div>
+        <% if (products.length === 0) { %><div class="empty">No products found. Try another search or add a product.</div><% } else { %>
+          <div class="products catalog">
+            <% products.forEach((product, index) => { %>
+              <article class="product-card" data-name="<%= product.name.toLowerCase() %>" data-category="<%= index % 3 === 0 ? 'desk' : index % 3 === 1 ? 'wear' : 'home' %>">
+                <div class="product-image"><button class="heart" type="button" aria-label="Save <%= product.name %>">&#9825;</button><img src="<%= product.image %>" alt="<%= product.name %>" /></div>
+                <div class="product-info"><h3><%= product.name %></h3><div class="meta"><span class="price">$<%= Number(product.price).toFixed(2) %></span><span class="stock"><%= product.quantity %> in stock</span></div><div class="card-actions"><a href="/products/<%= product._id %>" class="btn btn-light">View item</a><button class="btn btn-primary add-cart" type="button" data-id="<%= product._id %>" data-name="<%= product.name %>" data-price="<%= product.price %>" data-image="<%= product.image %>">+ Add</button><div class="manage-actions"><a class="icon-button" href="/edit/<%= product._id %>" title="Edit product" aria-label="Edit <%= product.name %>">&#9998;</a><form action="/delete/<%= product._id %>" method="POST" onsubmit="return confirm('Delete this product?');"><button class="icon-button delete-button" type="submit" title="Delete product" aria-label="Delete <%= product.name %>">&#128465;</button></form></div></div></div>
+              </article>
+            <% }); %>
+          </div>
+        <% } %>
+      </section>
+    </main>
+    <aside class="cart-drawer" id="cartDrawer" hidden><h2>Your cart</h2><ul class="cart-items" id="cartItems"></ul><button class="btn btn-primary" type="button" style="width:100%" id="checkoutButton">Checkout &rarr;</button></aside>
+    <script>
+      const cart = JSON.parse(localStorage.getItem('product-cart') || '[]');
+      const cartCount = document.getElementById('cartCount');
+      const cartDrawer = document.getElementById('cartDrawer');
+      const cartItems = document.getElementById('cartItems');
+      const renderCart = () => { cartCount.textContent = cart.length; cartItems.innerHTML = cart.length ? cart.map((item) => `<li><span>${item.name}</span><b>$${Number(item.price).toFixed(2)}</b></li>`).join('') : '<li>Your cart is waiting for a first pick.</li>'; };
+      document.getElementById('cartToggle').addEventListener('click', () => { cartDrawer.hidden = !cartDrawer.hidden; renderCart(); });
+      document.getElementById('checkoutButton').addEventListener('click', () => { alert('Checkout is ready.'); });
+      document.querySelectorAll('.heart').forEach((button) => button.addEventListener('click', () => button.classList.toggle('saved')));
+      document.querySelectorAll('.add-cart').forEach((button) => button.addEventListener('click', () => {
+        cart.push({ id: button.dataset.id, name: button.dataset.name, price: button.dataset.price });
+        localStorage.setItem('product-cart', JSON.stringify(cart));
+        button.textContent = 'Added ✓';
+        renderCart();
+        setTimeout(() => { button.textContent = '+ Add'; }, 1200);
+      }));
+      document.getElementById('manageToggle').addEventListener('click', (button) => {
+        const catalog = document.querySelector('.catalog');
+        const addProductButton = document.getElementById('addProductButton');
+        const isOpen = catalog.classList.toggle('manage-open');
+        button.currentTarget.textContent = isOpen ? '\u00d7' : '\u270e';
+        addProductButton.classList.toggle('visible', isOpen);
+        button.currentTarget.title = isOpen ? 'Close management actions' : 'Manage products';
+        button.currentTarget.setAttribute('aria-label', button.currentTarget.title);
+      });
+      document.querySelectorAll('.category').forEach((button) => button.addEventListener('click', () => {
+        if (!button.dataset.category) return;
+        document.querySelectorAll('.category').forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        document.querySelectorAll('.product-card').forEach((card) => { card.hidden = button.dataset.category !== 'all' && card.dataset.category !== button.dataset.category; });
+      }));
+      renderCart();
+    </script>
+  </body>
+</html>

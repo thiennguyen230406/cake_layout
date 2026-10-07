@@ -1,0 +1,26 @@
+{
+  "name": "cutlayout-hw-product-app",
+  "version": "1.0.0",
+  "description": "Product management app with Express, EJS, MongoDB and Multer",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js"
+  },
+  "keywords": [
+    "express",
+    "mongoose",
+    "mongodb",
+    "ejs",
+    "multer"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "method-override": "^2.1.0",
+    "mongoose": "^8.8.4",
+    "multer": "^2.0.2"
+  }
+}

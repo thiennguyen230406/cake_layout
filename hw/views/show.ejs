@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= product.name %> | Bách hóa /n gì cũng cóa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root { --ink:#20242d; --muted:#737783; --paper:#f8f7f3; --orange:#ff6b3d; --yellow:#ffd166; --blue:#85b7ff; --line:#e9e6df; --gold:#d7a13b; }
+      * { box-sizing:border-box; } body { margin:0; color:var(--ink); background:var(--paper); font-family:'DM Sans',sans-serif; } a { color:inherit; text-decoration:none; }
+      .shell { max-width:1120px; margin:auto; padding:0 28px; } .topbar { display:flex; align-items:center; justify-content:space-between; height:88px; border-bottom:1px solid #ffffff2b; color:#f7f4ec; background:#182327; }
+      .brand { display:flex; align-items:center; gap:10px; color:var(--gold); font:600 38px/1 'Cormorant Garamond',serif; letter-spacing:2px; text-transform:uppercase; } .brand-mark { display:none; } .back { color:#f7f4ec; font-size:13px; }
+      .detail { display:grid; grid-template-columns:1fr 1fr; gap:58px; align-items:center; padding:65px 0; } .visual { position:relative; height:min(500px,55vw); min-height:330px; overflow:hidden; background:var(--blue); border-radius:25px; } .visual img { width:100%; height:100%; object-fit:cover; mix-blend-mode:multiply; }
+      h1 { margin:14px 0 15px; font:700 clamp(38px,5vw,64px)/.98 'Space Grotesk'; letter-spacing:-3px; } .description { max-width:430px; color:var(--muted); line-height:1.7; } .price-row { display:flex; align-items:center; gap:13px; margin:28px 0 8px; } .price { font:700 30px 'Space Grotesk'; } .stock { padding:6px 9px; color:#24764c; background:#d9f2df; border-radius:6px; font-size:11px; font-weight:700; }
+      .actions { display:flex; gap:10px; } .btn { display:inline-flex; align-items:center; justify-content:center; border:0; border-radius:10px; padding:13px 18px; font:700 13px 'DM Sans'; cursor:pointer; } .primary { color:#fff; background:var(--ink); } .secondary { background:#fff; border:1px solid var(--line); } .admin { margin-top:25px; color:var(--muted); font-size:12px; } .admin a { text-decoration:underline; }
+      @media (max-width:700px) { .shell { padding:0 16px; } .brand { font-size:30px; } .detail { grid-template-columns:1fr; gap:30px; padding:35px 0; } .visual { height:72vw; min-height:250px; } h1 { letter-spacing:-2px; } }
+    </style>
+  </head>
+  <body>
+    <header class="shell topbar"><a class="brand" href="/"><span class="brand-mark">S</span> Bách hóa /n gì cũng cóa</a><a class="back" href="/">&larr; Back to products</a></header>
+    <main class="shell detail">
+      <div class="visual"><img src="<%= product.image %>" alt="<%= product.name %>" /></div>
+      <section class="copy">
+                <h1><%= product.name %></h1>
+                <p class="description">View product information and add this item to your shopping cart.</p>
+                <div class="price-row">
+                  <span class="price">$<%= Number(product.price).toFixed(2) %></span>
+                  <span class="stock"><%= product.quantity %> available</span>
+                </div>
+                <div class="actions">
+                  <button class="btn primary" id="addButton" type="button">+ Add to cart</button>
+                  <a href="/" class="btn secondary">Keep browsing</a>
+                </div>
+                <div class="admin">Manage this item: <a href="/edit/<%= product._id %>">Edit</a></div>
+      </section>
+    </main>
+    <script>
+      const button = document.getElementById('addButton');
+      button.addEventListener('click', () => {
+        const cart = JSON.parse(localStorage.getItem('product-cart') || '[]');
+        cart.push({ id: '<%= product._id %>', name: '<%= product.name %>', price: '<%= product.price %>' });
+        localStorage.setItem('product-cart', JSON.stringify(cart));
+        button.textContent = 'Added to cart ✓';
+      });
+    </script>
+  </body>
+</html>
