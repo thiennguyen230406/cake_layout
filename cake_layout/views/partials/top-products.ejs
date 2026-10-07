@@ -1,0 +1,20 @@
+<div class="beta-products-list">
+	<h4>Top Products</h4>
+	<div class="beta-products-details">
+		<p class="pull-left"><%= topProducts.length %> styles found</p>
+		<div class="clearfix"></div>
+	</div>
+
+	<% for (let i = 0; i < topProducts.length; i++) { %>
+	<% if (i % 4 === 0) { %>
+	<div class="row">
+	<% } %>
+	<%- include('./product-card', { product: topProducts[i] }) %>
+	<% if (i % 4 === 3 || i === topProducts.length - 1) { %>
+	</div>
+	<% if (i < topProducts.length - 1) { %>
+	<div class="space40">&nbsp;</div>
+	<% } %>
+	<% } %>
+	<% } %>
+</div>
