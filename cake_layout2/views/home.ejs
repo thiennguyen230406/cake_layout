@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cửa hàng bánh</title>
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/dest/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/assets/dest/css/style.css">
+  <link rel="stylesheet" href="/assets/dest/css/huong-style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main class="container">
+    <div class="space60">&nbsp;</div>
+    <%- include('partials/new-products', { newProducts }) %>
+    <div class="space50">&nbsp;</div>
+    <%- include('partials/top-products', { topProducts }) %>
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/assets/dest/js/jquery.js"></script>
+  <script src="/assets/dest/js/scripts.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+CREATE DATABASE IF NOT EXISTS cutlayout
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE cutlayout;
+
+CREATE TABLE IF NOT EXISTS products (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  image_url VARCHAR(500) NOT NULL,
+  price DECIMAL(12, 2) NOT NULL,
+  old_price DECIMAL(12, 2) NULL,
+  is_sale BOOLEAN NOT NULL DEFAULT FALSE,
+  detail_url VARCHAR(500) NOT NULL DEFAULT 'product.html',
+  product_type ENUM('new', 'top') NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX idx_products_type (product_type)
+);

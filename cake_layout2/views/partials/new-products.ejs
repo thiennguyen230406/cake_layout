@@ -1,0 +1,13 @@
+<div class="beta-products-list">
+	<h4>New Products</h4>
+	<div class="beta-products-details">
+		<p class="pull-left"><%= newProducts.length %> styles found</p>
+		<div class="clearfix"></div>
+	</div>
+
+	<div class="row">
+		<% for (let i = 0; i < newProducts.length; i++) { %>
+		<%- include('./product-card', { product: newProducts[i] }) %>
+		<% } %>
+	</div>
+</div>
